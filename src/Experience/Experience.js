@@ -85,6 +85,7 @@ export default class Experience {
 
   setRenderer() {
     this.renderer = new Renderer({ rendererInstance: this.rendererInstance });
+    this.renderer.outputEncoding = THREE.sRGBEncoding;
 
     this.targetElement.appendChild(this.renderer.instance.domElement);
   }
