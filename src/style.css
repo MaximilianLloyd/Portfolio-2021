@@ -8,12 +8,37 @@
 html,
 body
 {
-    overflow: hidden;
+    font-family: 'Roboto Mono', monospace;
 }
 
-.experience
+.experience, #scroll-container
 {
     position: fixed;
     width: 100vw;
     height: 100vh;
+}
+
+#scroll-container {
+    overflow-y: scroll;
+    z-index: 1;
+}
+
+
+
+#scroll-container .scroll {
+    height: 300vh;
+    width: 100%;
+}
+
+#scroll-container .intro {
+    font-size: 36px;
+    color: white;
+    position: absolute;
+    left: 0px;
+    bottom: 0px;
+    right: 0px;
+    top: 0px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
