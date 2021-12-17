@@ -42,3 +42,13 @@ body
     justify-content: center;
     align-items: center;
 }
+
+.hidden-canvas {
+    position: fixed;
+    top: 0px;
+    width: 1024px;
+    height: 576px;
+    left: 0px;
+    z-index: 2;
+    display: none;
+}

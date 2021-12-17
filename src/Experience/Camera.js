@@ -15,13 +15,12 @@ export default class Camera {
     this.debugObject = {
       position: {
         x: 0,
-        y: 1.265,
-        z: -1.2,
+        y: 1.115,
+        z: -0.8,
       },
     };
-
-    // Set up
-    this.mode = "debug"; // || "default"; // defaultCamera \ debugCamera
+    this.mode = "debug";
+    // Set up this.mode = "debug"; // || "default"; // defaultCamera \ debugCamera this.setInstance();
     this.setInstance();
     this.setModes();
     this.setDebug();
@@ -35,18 +34,23 @@ export default class Camera {
       0.1,
       150
     );
+    const { x, y, z } = this.debugObject.position;
+    this.instance.position.set(x, y, z);
     this.instance.rotation.reorder("YXZ");
     this.instance.rotation.y = (180 * Math.PI) / 180;
 
     this.scene.add(this.instance);
   }
 
+  getInstance() {
+    return this.modes[this.mode].instance;
+  }
+
   setDebug() {
     const onChange = (axis, value) => {
       this.debugObject.position[axis] = value;
       const { x, y, z } = this.debugObject.position;
-      this.modes.default.instance.position.set(x, y, z);
-      this.modes.debug.instance.position.set(x, y, z);
+      this.modes[this.mode].instance.position.set(x, y, z);
     };
 
     if (this.debug) {
@@ -74,28 +78,21 @@ export default class Camera {
 
     // Debug
     this.modes.debug = {
-      active: true,
+      active: false,
     };
     this.modes.debug.instance = this.instance.clone();
     this.modes.debug.instance.rotation.reorder("YXZ");
-    const { x, y, z } = this.debugObject.position;
+    // this.modes.debug.orbitControls = new OrbitControls(
+    //   this.modes.debug.instance,
+    //   this.targetElement
+    // );
 
-    this.modes.debug.instance.position.set(x, y, z);
-    this.modes.default.instance.position.set(x, y, z);
-
-    this.instance.position.set(x, y, z);
-
-    this.modes.debug.orbitControls = new OrbitControls(
-      this.modes.debug.instance,
-      this.targetElement
-    );
-
-    this.modes.debug.orbitControls.enabled = this.modes.debug.active;
-    this.modes.debug.orbitControls.screenSpacePanning = true;
-    this.modes.debug.orbitControls.enableKeys = false;
-    this.modes.debug.orbitControls.zoomSpeed = 0.25;
-    this.modes.debug.orbitControls.enableDamping = true;
-    this.modes.debug.orbitControls.update();
+    // this.modes.debug.orbitControls.enabled = this.modes.debug.active;
+    // this.modes.debug.orbitControls.screenSpacePanning = true;
+    // this.modes.debug.orbitControls.enableKeys = false;
+    // this.modes.debug.orbitControls.zoomSpeed = 0.25;
+    // this.modes.debug.orbitControls.enableDamping = true;
+    // this.modes.debug.orbitControls.update();
   }
 
   resize() {
@@ -111,15 +108,17 @@ export default class Camera {
 
   update() {
     // Update debug orbit controls
-    this.modes.debug.orbitControls.update();
+    // this.modes.debug.orbitControls.update();
 
     // Apply coordinates
-    this.instance.position.copy(this.modes[this.mode].instance.position);
-    this.instance.quaternion.copy(this.modes[this.mode].instance.quaternion);
-    this.instance.updateMatrixWorld(); // To be used in projection
+    if (this.instance) {
+      this.instance.position.copy(this.modes[this.mode].instance.position);
+      this.instance.quaternion.copy(this.modes[this.mode].instance.quaternion);
+      this.instance.updateMatrixWorld(); // To be used in projection
+    }
   }
 
   destroy() {
-    this.modes.debug.orbitControls.destroy();
+    // this.modes.debug.orbitControls.destroy();
   }
 }

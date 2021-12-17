@@ -1,22 +1,30 @@
 import * as THREE from "three";
 import anime from "animejs/lib/anime.es.js";
-
 import Experience from "./Experience.js";
+import { Keyboard } from "./Keyboard.js";
+import { Mouse } from "./Mouse.js";
+import { Screen } from "./Screen.js";
 
 import screenVertexShader from "./Shaders/screen/vertex.glsl";
 import screenFragmentShader from "./Shaders/screen/fragment.glsl";
-
 export default class World {
   constructor(_options) {
     this.experience = new Experience();
+    this.keyboard = new Keyboard();
+    this.mouse = new Mouse();
+    this.screen = new Screen();
     this.config = this.experience.config;
     this.scene = this.experience.scene;
     this.resources = this.experience.resources;
     this.time = this.experience.time;
+    this.sizes = this.experience.sizes;
+    this.camera = this.experience.camera.getInstance();
     this.scrollPercent = 0;
+    this.cursor = { x: 0, y: 0 };
 
     this.resources.on("groupEnd", (_group) => {
       if (_group.name === "base") {
+        this.initializeParallax();
         this.initializeAnimations();
         this.initializeScroll();
         this.initializeMaterials();
@@ -39,18 +47,27 @@ export default class World {
   initializeScroll() {
     const scrollContainer = document.querySelector("#scroll-container");
     const scrollElement = document.querySelector(".scroll");
-
     const height = scrollElement.clientHeight - scrollContainer.clientHeight;
-
     if (this.experience.camera) {
       const initialCameraZ = this.experience.camera.instance.position.z;
 
       scrollContainer.addEventListener("scroll", () => {
         this.scrollPercent = scrollContainer.scrollTop / height;
-        const newZ = initialCameraZ + -this.scrollPercent * 1.3;
-        this.experience.camera.modes.default.instance.position.z = newZ;
+        const newZ = initialCameraZ + -this.scrollPercent * 1.4;
+
+        this.camera.position.z = newZ;
       });
     }
+  }
+
+  initializeParallax() {
+    this.cursor.x = 0;
+    this.cursor.y = 0;
+
+    window.addEventListener("mousemove", (event) => {
+      this.cursor.x = event.clientX / this.sizes.width - 0.5;
+      this.cursor.y = event.clientY / this.sizes.height - 0.5;
+    });
   }
 
   // todo: create helper function for applying sRGBEncoding to textures
@@ -64,30 +81,22 @@ export default class World {
       map: deskTexture,
     });
 
-    this.screenMaterial = new THREE.ShaderMaterial({
-      vertexShader: screenVertexShader,
-      fragmentShader: screenFragmentShader,
-      uniforms: {
-        uTime: {
-          value: 0,
-        },
-        uBrightness: {
-          value: 0,
-        },
-      },
-    });
-
-    console.log(this.resources.items.elliotTexture);
-    const elliotTexture = this.resources.items.elliotTexture;
-    elliotTexture.encoding = THREE.sRGBEncoding;
-    // elliotTexture.flipY = false;
-
-    this.elliotPictureMaterial = new THREE.MeshBasicMaterial({
-      side: THREE.DoubleSide,
-      map: elliotTexture,
+    //     this.screenMaterial = new THREE.ShaderMaterial({
+    //       vertexShader: screenVertexShader,
+    //       fragmentShader: screenFragmentShader,
+    //       uniforms: {
+    //         uTime: {
+    //           value: 0,
+    //         },
+    //         uBrightness: {
+    //           value: 0,
+    //         },
+    //       },
+    //     });
+    this.screenMaterial = new THREE.MeshBasicMaterial({
+      map: this.screen.texture,
     });
   }
-
   setScene() {
     this.keys = [];
     this.keyTimelines = {};
@@ -102,77 +111,40 @@ export default class World {
         this.screenMesh = child;
       }
 
-      if (child.name === "picture01") {
-        child.material = this.elliotPictureMaterial;
-      }
-
-      if (child.name.includes("key")) {
-        this.keys.push(child);
-        this.keyTimelines[child.name] = anime.timeline({
-          duration: 100,
-          // direction: "dire",
-          autoplay: false,
-          easing: "linear",
-        });
-
-        this.keyTimelines[child.name].add({
-          targets: child.position,
-          y: child.position.y - 0.006,
-        });
+      if (child.name === "mouse") {
+        this.mouse.setMouse(child);
       }
     });
 
-    document.addEventListener(
-      "keydown",
-      (event) => {
-        console.log(event.code);
-        const keyName = event.code.toLowerCase();
-        const keyCapMesh = this.keys.find((key) => key.name === keyName);
-
-        if (keyCapMesh) {
-          const timeline = this.keyTimelines[keyCapMesh.name];
-
-          if (!event.repeat) {
-            if (timeline.reversed) {
-              timeline.reverse();
-            }
-            timeline.play();
-          }
-        }
-      },
-      false
-    );
-
-    document.addEventListener(
-      "keyup",
-      (event) => {
-        const keyName = event.code.toLowerCase();
-        const keyCapMesh = this.keys.find((key) => key.name.includes(keyName));
-
-        if (keyCapMesh) {
-          const timeline = this.keyTimelines[keyCapMesh.name];
-          timeline.reverse();
-          timeline.play();
-        }
-      },
-      false
-    );
-
+    this.keyboard.setKeyboard(this.deskScene);
     this.scene.add(this.deskScene);
   }
 
   resize() {}
 
   update() {
+    this.screen.update();
+    if (this.screenMaterial) this.screenMaterial.map = this.screen.texture;
+
+    if (this.screenMaterial) this.screenMaterial.needsUpdate = true;
+    this.camera.position.x = -(this.cursor.x - this.camera.position.x) * 0.1;
+
+    this.camera.position.y =
+      1.105 + -(this.cursor.y - this.camera.position.y) * 0.01;
+
     if (this.screenMaterial) {
-      this.screenMaterial.uniforms.uTime.value = this.time.elapsed / 1000;
-      this.screenMaterial.uniforms.uBrightness.value = this.scrollPercent;
+      // this.screenMaterial.uniforms.uTime.value = this.time.elapsed / 1000;
+      // this.screenMaterial.uniforms.uBrightness.value = this.scrollPercent;
     }
 
+    this.mouse.update(this.cursor);
+
     if (this.screenMesh) {
-      // this.experience.camera.instance.lookAt(this.screenMesh.position);
+      this.camera.lookAt(this.screenMesh.position);
     }
   }
 
-  destroy() {}
+  destroy() {
+    this.keyboard.destroy();
+  }
 }
