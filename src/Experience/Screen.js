@@ -26,7 +26,7 @@ export class Screen {
     this.cube = new THREE.Mesh(
       new THREE.BoxGeometry(1.0, 1.0, 1),
       new THREE.MeshBasicMaterial({
-        color: 0xff0000,
+        color: 0x00ff00,
       })
     );
 
