@@ -93,6 +93,7 @@ export default class World {
     //         },
     //       },
     //     });
+    this.screen.texture.flipY = false;
     this.screenMaterial = new THREE.MeshBasicMaterial({
       map: this.screen.texture,
     });
