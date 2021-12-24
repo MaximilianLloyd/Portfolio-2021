@@ -7,6 +7,14 @@ import { Screen } from "./Screen.js";
 
 import screenVertexShader from "./Shaders/screen/vertex.glsl";
 import screenFragmentShader from "./Shaders/screen/fragment.glsl";
+
+import { lerp } from "../Helpers/math";
+
+const STAGES = {
+  INTRO_SCROLLING: 1,
+  PLAY_TEXT_INTRO: 2,
+};
+
 export default class World {
   constructor(_options) {
     this.experience = new Experience();
@@ -21,6 +29,11 @@ export default class World {
     this.camera = this.experience.camera.getInstance();
     this.scrollPercent = 0;
     this.cursor = { x: 0, y: 0 };
+    this.newCameraZ = 0;
+    this.CURRENT_STAGE = STAGES.INTRO_SCROLLING;
+
+    this.scrollContainer = document.querySelector("#scroll-container");
+    this.scrollElement = document.querySelector(".scroll");
 
     this.resources.on("groupEnd", (_group) => {
       if (_group.name === "base") {
@@ -45,18 +58,34 @@ export default class World {
   }
 
   initializeScroll() {
-    const scrollContainer = document.querySelector("#scroll-container");
-    const scrollElement = document.querySelector(".scroll");
-    const height = scrollElement.clientHeight - scrollContainer.clientHeight;
     if (this.experience.camera) {
-      const initialCameraZ = this.experience.camera.instance.position.z;
+      const cameraPosition = this.experience.camera.instance.position;
+      this.initialCameraZ = cameraPosition.z;
+      this.newCameraZ = this.initialCameraZ + -this.scrollPercent * 1.5;
 
-      scrollContainer.addEventListener("scroll", () => {
-        this.scrollPercent = scrollContainer.scrollTop / height;
-        const newZ = initialCameraZ + -this.scrollPercent * 1.4;
+      this.scrollContainer.addEventListener("scroll", () =>
+        this.handleScroll()
+      );
+    }
+  }
 
-        this.camera.position.z = newZ;
-      });
+  handleScroll() {
+    const height =
+      this.scrollElement.clientHeight - this.scrollContainer.clientHeight;
+
+    this.scrollPercent = this.scrollContainer.scrollTop / height;
+    this.newCameraZ = this.initialCameraZ + -this.scrollPercent * 1.5;
+
+    this.handleScreenTextPlaying();
+  }
+
+  handleScreenTextPlaying() {
+    const shouldPlayIntroText =
+      this.scrollPercent > 0.8 && this.CURRENT_STAGE === STAGES.INTRO_SCROLLING;
+
+    if (shouldPlayIntroText) {
+      this.CURRENT_STAGE = STAGES.PLAY_TEXT_INTRO;
+      this.screen.startTextTimeline();
     }
   }
 
@@ -93,7 +122,7 @@ export default class World {
     //         },
     //       },
     //     });
-    this.screen.texture.flipY = false;
+    this.screen.texture.flipY = true;
     this.screenMaterial = new THREE.MeshBasicMaterial({
       map: this.screen.texture,
     });
@@ -132,6 +161,12 @@ export default class World {
 
     this.camera.position.y =
       1.105 + -(this.cursor.y - this.camera.position.y) * 0.01;
+
+    this.camera.position.z = lerp(
+      this.camera.position.z,
+      this.newCameraZ,
+      0.05
+    );
 
     if (this.screenMaterial) {
       // this.screenMaterial.uniforms.uTime.value = this.time.elapsed / 1000;

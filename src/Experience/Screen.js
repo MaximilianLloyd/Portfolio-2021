@@ -10,23 +10,22 @@ export class Screen {
     this.scene = new THREE.Scene();
     this.experience = new Experience();
     this.time = this.experience.time;
-    // 1024×576
+
     const width = 1920;
     const height = 1080;
-    this.canvas = document.querySelector(".hidden-canvas");
-    this.texture = new THREE.CanvasTexture(this.canvas);
-    this.texture.encoding = THREE.sRGBEncoding;
 
     this.camera = new THREE.PerspectiveCamera(75, width / height, 0.1, 150);
     this.camera.rotation.reorder("YXZ");
     this.camera.position.set(0, 0, 2.5);
-    this.renderer = new THREE.WebGLRenderer({
-      antialias: true,
-      width,
-      height,
-      canvas: this.canvas,
+
+    this.target = new THREE.WebGLRenderTarget(width, height, {
+      minFilter: THREE.LinearFilter,
+      magFilter: THREE.LinearFilter,
     });
-    this.renderer.setPixelRatio(1);
+
+    this.texture = this.target.texture;
+    // this.texture.flipY = false;
+
     preloadFont(
       {
         font: "/assets/fonts/MR_ROBOT.ttf",
@@ -39,20 +38,7 @@ export class Screen {
   }
 
   async setScene() {
-    this.cube = new THREE.Mesh(
-      new THREE.BoxGeometry(1.0, 1.0, 1),
-      new THREE.MeshBasicMaterial({
-        color: 0x00ff00,
-      })
-    );
-
-    this.cube.position.set(0, 0, 0);
-
-    // this.scene.add(this.cube);
-
     this.introText = new Text();
-
-    // myText.rotation.y = Math.PI / 180;
     this.introText.font = "/assets/fonts/MR_ROBOT.ttf";
     this.introText.text = "";
     this.introText.fontSize = 0.2;
@@ -62,14 +48,15 @@ export class Screen {
     this.introText.maxWidth = 3.2;
     this.introText.anchorX = "center";
     this.introText.textAlign = "center";
-    this.introText.material.opacity = 0.5;
 
     this.scene.add(this.introText);
 
     this.camera.lookAt(new THREE.Vector3(0, 0, 0));
+    await delay(1000);
+    await this.animateText("Scroll down, friend.");
+  }
 
-    this.renderer.setClearColor(new THREE.Color("#111111"));
-
+  async startTextTimeline() {
     await delay(1000);
     await this.animateText("Hello friend");
     await delay(1000);
@@ -134,7 +121,8 @@ export class Screen {
   }
 
   update() {
-    this.renderer.render(this.scene, this.camera);
-    this.texture.needsUpdate = true;
+    this.experience.renderer.instance.setRenderTarget(this.target);
+    this.experience.renderer.instance.render(this.scene, this.camera);
+    this.experience.renderer.instance.setRenderTarget(null);
   }
 }
