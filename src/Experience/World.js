@@ -37,23 +37,23 @@ export default class World {
 
     this.resources.on("groupEnd", (_group) => {
       if (_group.name === "base") {
+        console.log("Loading ended");
         this.initializeParallax();
-        this.initializeAnimations();
         this.initializeScroll();
         this.initializeMaterials();
         this.setScene();
-      }
-    });
-  }
 
-  initializeAnimations() {
-    anime({
-      targets: ".intro",
-      easing: "linear",
-      opacity: 0,
-      duration: 1500,
-      loop: true,
-      direction: "alternate",
+        setTimeout(() => {
+          anime({
+            targets: ".overlay",
+            duration: 1500,
+            opacity: 0,
+            complete: () => {
+              this.screen.startIntroText();
+            },
+          });
+        }, 500);
+      }
     });
   }
 

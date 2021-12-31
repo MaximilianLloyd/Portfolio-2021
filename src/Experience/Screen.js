@@ -11,14 +11,15 @@ export class Screen {
     this.experience = new Experience();
     this.time = this.experience.time;
 
-    const width = 1920;
-    const height = 1080;
+    const width = 1280;
+    const height = 720;
 
     this.camera = new THREE.PerspectiveCamera(75, width / height, 0.1, 150);
     this.camera.rotation.reorder("YXZ");
     this.camera.position.set(0, 0, 2.5);
 
     this.target = new THREE.WebGLRenderTarget(width, height, {
+      antiAlias: true,
       minFilter: THREE.LinearFilter,
       magFilter: THREE.LinearFilter,
     });
@@ -52,7 +53,9 @@ export class Screen {
     this.scene.add(this.introText);
 
     this.camera.lookAt(new THREE.Vector3(0, 0, 0));
-    await delay(1000);
+  }
+
+  async startIntroText() {
     await this.animateText("Scroll down, friend.");
   }
 
@@ -76,7 +79,7 @@ export class Screen {
     );
     await delay(1000);
     await this.animateClearingOfText();
-    await this.animateText("Let me show you some of my work");
+    await this.animateText("More content coming soon...");
   }
 
   animateText(textToAnimate) {

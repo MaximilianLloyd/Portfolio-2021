@@ -9,7 +9,14 @@ html,
 body
 {
     font-family: 'Roboto Mono', monospace;
+    overflow: hidden;
 }
+
+/* ::-webkit-scrollbar { */
+/*     width: 0;  /1* Remove scrollbar space *1/ */
+/*     background: transparent;  /1* Optional: just make scrollbar invisible *1/ */
+/* } */
+
 
 .experience, #scroll-container
 {
@@ -43,12 +50,11 @@ body
     align-items: center;
 }
 
-.hidden-canvas {
-    position: fixed;
-    top: 0px;
-    width: 1024px;
-    height: 576px;
+.overlay {
+    position: absolute;
     left: 0px;
-    z-index: 2;
-    display: none;
+    bottom: 0px;
+    right: 0px;
+    top: 0px;
+    background: rgba(0, 0, 0, 1);
 }
