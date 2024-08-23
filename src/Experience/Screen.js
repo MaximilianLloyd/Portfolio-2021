@@ -34,7 +34,7 @@ export class Screen {
       },
       () => {
         this.setScene();
-      }
+      },
     );
   }
 
@@ -66,7 +66,7 @@ export class Screen {
     await this.animateClearingOfText();
     await delay(500);
     await this.animateText(
-      `"Hello friend", that's lame. Maybe i should give you a name?`
+      `"Hello friend", that's lame. Maybe i should give you a name..`,
     );
     await delay(1000);
     await this.animateClearingOfText();
@@ -75,7 +75,7 @@ export class Screen {
     await delay(500);
     await this.animateClearingOfText();
     await this.animateText(
-      "I'm Max. A creative developer based in Oslo, Norway"
+      "I'm Max. A creative developer based in Oslo, Norway",
     );
     await delay(1000);
     await this.animateClearingOfText();
