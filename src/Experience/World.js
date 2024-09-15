@@ -1,6 +1,6 @@
 import * as THREE from "three";
 import anime from "animejs/lib/anime.es.js";
-import Experience from "./Experience.js";
+import Experience from "./Experience";
 import { Keyboard } from "./Keyboard.js";
 import { Mouse } from "./Mouse.js";
 import { Screen } from "./Screen.js";
@@ -47,9 +47,11 @@ export default class World {
           anime({
             targets: ".overlay",
             duration: 1500,
+            easing: "easeInOutQuint",
             opacity: 0,
             complete: () => {
-              this.screen.startIntroText();
+              // this.screen.startIntroText();
+              this.screen.startTextTimeline();
             },
           });
         }, 500);
@@ -63,6 +65,7 @@ export default class World {
       this.initialCameraZ = cameraPosition.z;
       this.newCameraZ = this.initialCameraZ + -this.scrollPercent * 1.5;
 
+      this.handleScreenTextPlaying();
       this.scrollContainer.addEventListener("scroll", () =>
         this.handleScroll(),
       );
@@ -76,18 +79,10 @@ export default class World {
     this.scrollPercent = this.scrollContainer.scrollTop / height;
     this.newCameraZ = this.initialCameraZ + -this.scrollPercent * 1.5;
 
-    this.handleScreenTextPlaying();
+    // this.handleScreenTextPlaying();
   }
 
-  handleScreenTextPlaying() {
-    const shouldPlayIntroText =
-      this.scrollPercent > 0.8 && this.CURRENT_STAGE === STAGES.INTRO_SCROLLING;
-
-    if (shouldPlayIntroText) {
-      this.CURRENT_STAGE = STAGES.PLAY_TEXT_INTRO;
-      this.screen.startTextTimeline();
-    }
-  }
+  handleScreenTextPlaying() {}
 
   initializeParallax() {
     this.cursor.x = 0;

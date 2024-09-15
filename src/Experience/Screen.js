@@ -62,10 +62,6 @@ export class Screen {
     this.camera.lookAt(new THREE.Vector3(0, 0, 0));
   }
 
-  async startIntroText() {
-    await this.animateText("Scroll down, friend.");
-  }
-
   async startTextTimeline() {
     this.scene.add(this.terminal.group);
 
@@ -89,7 +85,8 @@ export class Screen {
     await delay(1000);
     await this.animateClearingOfText();
     await this.animateText("type 'help' to get started");
-
+    await delay(500);
+    await this.animateClearingOfText();
     // Add the command prompt text
     // await this.animateText("More content coming soon...");
   }

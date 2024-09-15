@@ -1,5 +1,5 @@
 import * as THREE from "three";
-import Experience from "./Experience.js";
+import Experience from "./Experience";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 
 export default class Camera {
@@ -16,7 +16,7 @@ export default class Camera {
       position: {
         x: 0,
         y: 1.115,
-        z: -0.8,
+        z: -1.4,
       },
     };
     this.mode = "debug";
@@ -32,7 +32,7 @@ export default class Camera {
       25,
       this.config.width / this.config.height,
       0.1,
-      150
+      150,
     );
     const { x, y, z } = this.debugObject.position;
     this.instance.position.set(x, y, z);

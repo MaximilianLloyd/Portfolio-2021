@@ -43,9 +43,9 @@ export class Keyboard {
     this.keyDownListener = document.addEventListener(
       "keydown",
       (event) => {
-        console.log(event.code);
+        console.log("here", event.code);
         const keyCapMesh = this.keys.find((key) =>
-          key.name.includes(event.code)
+          key.name.includes(event.code),
         );
 
         if (keyCapMesh) {
@@ -59,14 +59,14 @@ export class Keyboard {
           }
         }
       },
-      false
+      false,
     );
 
     this.keyUpListener = document.addEventListener(
       "keyup",
       (event) => {
         const keyCapMesh = this.keys.find((key) =>
-          key.name.includes(event.code)
+          key.name.includes(event.code),
         );
 
         if (keyCapMesh) {
@@ -75,7 +75,7 @@ export class Keyboard {
           timeline.play();
         }
       },
-      false
+      false,
     );
   }
 

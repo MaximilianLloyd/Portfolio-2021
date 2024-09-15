@@ -1,5 +1,5 @@
 import * as THREE from "three";
-import Experience from "./Experience.js";
+import Experience from "./Experience";
 import { EffectComposer } from "three/examples/jsm/postprocessing/EffectComposer.js";
 import { RenderPass } from "three/examples/jsm/postprocessing/RenderPass.js";
 
@@ -91,7 +91,7 @@ export default class Renderer {
      */
     this.postProcess.renderPass = new RenderPass(
       this.scene,
-      this.camera.instance
+      this.camera.instance,
     );
 
     /**
@@ -111,11 +111,11 @@ export default class Renderer {
         magFilter: THREE.LinearFilter,
         format: THREE.RGBFormat,
         encoding: THREE.sRGBEncoding,
-      }
+      },
     );
     this.postProcess.composer = new EffectComposer(
       this.instance,
-      this.renderTarget
+      this.renderTarget,
     );
     this.postProcess.composer.setSize(this.config.width, this.config.height);
     this.postProcess.composer.setPixelRatio(this.config.pixelRatio);
