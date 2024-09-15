@@ -74,6 +74,13 @@ p {
   transform: rotate(270deg);
 }
 
+@media(max-width: 768px) {
+  #contact {
+    display: none;
+
+  }
+}
+
 #contact a {
   color: white;
   text-decoration: none;

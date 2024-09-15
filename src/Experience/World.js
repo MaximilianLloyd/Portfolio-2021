@@ -63,7 +63,7 @@ export default class World {
     if (this.experience.camera) {
       const cameraPosition = this.experience.camera.instance.position;
       this.initialCameraZ = cameraPosition.z;
-      this.newCameraZ = this.initialCameraZ + -this.scrollPercent * 1.5;
+      this.newCameraZ = this.initialCameraZ + -this.scrollPercent * 2;
 
       this.handleScreenTextPlaying();
       this.scrollContainer.addEventListener("scroll", () =>

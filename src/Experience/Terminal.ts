@@ -18,7 +18,6 @@ export class Terminal {
   about: About;
   cmdPromptText: any;
   cmdPromptOutput: any;
-  cursor: THREE.Mesh;
 
   constructor() {
     this.cmdPromptText = new Text();
@@ -49,7 +48,6 @@ export class Terminal {
     this.cmdPromptOutput.sync();
 
     this.group.add(this.cmdPromptText);
-    this.group.add(this.cursor);
     this.group.add(this.cmdPromptOutput);
 
     window.addEventListener("keydown", this.handleKeyDown.bind(this));
