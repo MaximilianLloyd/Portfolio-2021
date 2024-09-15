@@ -1,6 +1,5 @@
 import { Text, preloadFont } from "troika-three-text";
 import * as THREE from "three";
-import { About } from "./About";
 import anime from "animejs";
 
 type Commands =
@@ -15,7 +14,6 @@ type Commands =
 export class Terminal {
   prompt = "help";
   group = new THREE.Group();
-  about: About;
   cmdPromptText: any;
   cmdPromptOutput: any;
 
@@ -31,8 +29,6 @@ export class Terminal {
     this.cmdPromptText.position.z = -2;
     this.cmdPromptText.color = "green";
     this.cmdPromptText.sync();
-
-    this.about = new About();
 
     this.cmdPromptOutput = new Text();
     this.cmdPromptOutput.font = "/assets/fonts/JetBrainsMono-Regular.ttf";
