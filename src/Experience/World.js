@@ -5,8 +5,8 @@ import { Keyboard } from "./Keyboard.js";
 import { Mouse } from "./Mouse.js";
 import { Screen } from "./Screen.js";
 
-import screenVertexShader from "./Shaders/screen/vertex.glsl";
-import screenFragmentShader from "./Shaders/screen/fragment.glsl";
+// import screenVertexShader from "./Shaders/screen/vertex.glsl";
+// import screenFragmentShader from "./Shaders/screen/fragment.glsl";
 
 import { lerp } from "../Helpers/math";
 
@@ -64,7 +64,7 @@ export default class World {
       this.newCameraZ = this.initialCameraZ + -this.scrollPercent * 1.5;
 
       this.scrollContainer.addEventListener("scroll", () =>
-        this.handleScroll()
+        this.handleScroll(),
       );
     }
   }
@@ -165,7 +165,7 @@ export default class World {
     this.camera.position.z = lerp(
       this.camera.position.z,
       this.newCameraZ,
-      0.05
+      0.05,
     );
 
     if (this.screenMaterial) {

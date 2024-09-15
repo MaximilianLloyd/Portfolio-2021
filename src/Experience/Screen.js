@@ -4,19 +4,21 @@ import delay from "delay";
 import { Text, preloadFont } from "troika-three-text";
 
 import Experience from "./Experience";
+import { Terminal } from "./Terminal";
 
 export class Screen {
   constructor() {
     this.scene = new THREE.Scene();
     this.experience = new Experience();
     this.time = this.experience.time;
+    this.terminal = new Terminal();
 
-    const width = 1280;
-    const height = 720;
+    const width = 1370;
+    const height = 768;
 
-    this.camera = new THREE.PerspectiveCamera(75, width / height, 0.1, 150);
+    this.camera = new THREE.PerspectiveCamera(50, width / height, 0.1, 150);
     this.camera.rotation.reorder("YXZ");
-    this.camera.position.set(0, 0, 2.5);
+    this.camera.position.set(0, 0, 2);
 
     this.target = new THREE.WebGLRenderTarget(width, height, {
       antiAlias: true,
@@ -25,8 +27,6 @@ export class Screen {
     });
 
     this.texture = this.target.texture;
-    // this.texture.flipY = false;
-
     preloadFont(
       {
         font: "/assets/fonts/MR_ROBOT.ttf",
@@ -50,6 +50,13 @@ export class Screen {
     this.introText.anchorX = "center";
     this.introText.textAlign = "center";
 
+    const box = new THREE.BoxGeometry(1, 1, 1);
+    const material = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
+
+    this.mesh = new THREE.Mesh(box, material);
+    this.mesh.position.x = -1;
+    this.mesh.position.y = -1;
+
     this.scene.add(this.introText);
 
     this.camera.lookAt(new THREE.Vector3(0, 0, 0));
@@ -60,6 +67,8 @@ export class Screen {
   }
 
   async startTextTimeline() {
+    this.scene.add(this.terminal.group);
+
     await delay(1000);
     await this.animateText("Hello friend");
     await delay(1000);
@@ -79,7 +88,10 @@ export class Screen {
     );
     await delay(1000);
     await this.animateClearingOfText();
-    await this.animateText("More content coming soon...");
+    await this.animateText("type 'help' to get started");
+
+    // Add the command prompt text
+    // await this.animateText("More content coming soon...");
   }
 
   animateText(textToAnimate) {
