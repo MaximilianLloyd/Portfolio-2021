@@ -32,7 +32,7 @@ export default class Renderer {
             this.debugFolder = this.debug.addFolder("renderer");
         }
 
-        this.usePostprocess = false;
+        this.usePostprocess = true;
 
         this.setInstance();
         this.setPostProcess();
@@ -102,21 +102,9 @@ export default class Renderer {
         }
     }
 
+    renderTarget: THREE.WebGLRenderTarget;
+
     setPostProcess() {
-        this.postProcess = {};
-
-        /**
-         * Render pass
-         */
-        this.postProcess.renderPass = new RenderPass(
-            this.scene,
-            this.camera.instance,
-        );
-
-        /**
-         * Effect composer
-         */
-        // const RenderTargetClass = THREE.WebGLRenderTarget
         this.renderTarget = new THREE.WebGLRenderTarget(
             this.config.width,
             this.config.height,
@@ -125,45 +113,21 @@ export default class Renderer {
                 minFilter: THREE.LinearFilter,
                 magFilter: THREE.LinearFilter,
                 format: THREE.RGBFormat,
-                encoding: THREE.sRGBEncoding,
             },
         );
-        this.postProcess.composer = new EffectComposer(
-            this.instance,
-            this.renderTarget,
-        );
-        this.postProcess.composer.setSize(
-            this.config.width,
-            this.config.height,
-        );
-        this.postProcess.composer.setPixelRatio(this.config.pixelRatio);
-
-        this.postProcess.composer.addPass(this.postProcess.renderPass);
     }
 
     resize() {
         // Instance
         this.instance.setSize(this.config.width, this.config.height);
         this.instance.setPixelRatio(this.config.pixelRatio);
-
-        // Post process
-        this.postProcess.composer.setSize(
-            this.config.width,
-            this.config.height,
-        );
-        this.postProcess.composer.setPixelRatio(this.config.pixelRatio);
     }
 
     update() {
         if (this.stats) {
             this.stats.beforeRender();
         }
-
-        if (this.usePostprocess) {
-            this.postProcess.composer.render();
-        } else {
-            this.instance.render(this.scene, this.camera.instance);
-        }
+        this.instance.render(this.scene, this.camera.instance);
 
         if (this.stats) {
             this.stats.afterRender();
@@ -174,7 +138,5 @@ export default class Renderer {
         this.instance.renderLists.dispose();
         this.instance.dispose();
         this.renderTarget.dispose();
-        this.postProcess.composer.renderTarget1.dispose();
-        this.postProcess.composer.renderTarget2.dispose();
     }
 }

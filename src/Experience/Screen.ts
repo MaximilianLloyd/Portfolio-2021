@@ -63,11 +63,9 @@ export class Screen {
 
         const box = new THREE.BoxGeometry(1, 1, 1);
         const material = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
+        const light = new THREE.AmbientLight(0xffffff, 10);
 
-        // this.mesh = new THREE.Mesh(box, material);
-        // this.mesh.position.x = -1;
-        // this.mesh.position.y = -1;
-
+        this.scene.add(light);
         this.scene.add(this.introText);
 
         this.camera.lookAt(new THREE.Vector3(0, 0, 0));
@@ -109,7 +107,6 @@ export class Screen {
             let index = 1;
 
             const interval = setInterval(() => {
-                console.log("interval");
                 const textToShow = textToAnimate.substring(0, index);
 
                 if (textToAnimate.length === textToShow.length) {

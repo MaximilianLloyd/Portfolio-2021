@@ -1,7 +1,7 @@
 import * as THREE from "three";
 import anime from "animejs/lib/anime.es.js";
 import Experience from "./Experience";
-import { Keyboard } from "./Keyboard.js";
+import { Keyboard } from "./Keyboard";
 import { Mouse } from "./Mouse.js";
 import { Screen } from "./Screen";
 
@@ -105,18 +105,6 @@ export default class World {
             map: deskTexture,
         });
 
-        //     this.screenMaterial = new THREE.ShaderMaterial({
-        //       vertexShader: screenVertexShader,
-        //       fragmentShader: screenFragmentShader,
-        //       uniforms: {
-        //         uTime: {
-        //           value: 0,
-        //         },
-        //         uBrightness: {
-        //           value: 0,
-        //         },
-        //       },
-        //     });
         this.screen.texture.flipY = true;
         this.screenMaterial = new THREE.MeshBasicMaterial({
             map: this.screen.texture,

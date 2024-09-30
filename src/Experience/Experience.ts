@@ -1,14 +1,14 @@
 import * as THREE from "three";
 import GUI from "lil-gui";
 
-import Time from "./Utils/Time.js";
-import Sizes from "./Utils/Sizes.js";
-import Stats from "./Utils/Stats.js";
+import Time from "./Utils/Time";
+import Sizes from "./Utils/Sizes";
+import Stats from "./Utils/Stats";
 
-import Resources from "./Resources.js";
-import Renderer from "./Renderer.js";
-import Camera from "./Camera.js";
-import World from "./World.js";
+import Resources from "./Resources";
+import Renderer from "./Renderer";
+import Camera from "./Camera";
+import World from "./World";
 
 export type Config = {
     pixelRatio: number;
