@@ -4,7 +4,7 @@ import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
 import { FBXLoader } from "three/examples/jsm/loaders/FBXLoader.js";
 import { DRACOLoader } from "three/examples/jsm/loaders/DRACOLoader.js";
 import { RGBELoader } from "three/examples/jsm/loaders/RGBELoader.js";
-import { BasisTextureLoader } from "three/examples/jsm/loaders/BasisTextureLoader.js";
+import { KTX2Loader } from "three/examples/jsm/loaders/KTX2Loader.js";
 
 export default class Resources extends EventEmitter {
   /**
@@ -48,7 +48,7 @@ export default class Resources extends EventEmitter {
     });
 
     // Basis images
-    const basisLoader = new BasisTextureLoader();
+    const basisLoader = new KTX2Loader();
     basisLoader.setTranscoderPath("basis/");
     basisLoader.detectSupport(this.renderer);
 
