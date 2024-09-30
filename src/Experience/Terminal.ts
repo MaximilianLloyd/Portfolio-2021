@@ -61,7 +61,6 @@ export class Terminal {
                 this.cmdPromptOutput.text = [
                     "about",
                     "contact",
-                    "projects",
                     "cv - download my CV",
                     "clear - clear the terminal",
                 ].join("\n");

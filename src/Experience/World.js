@@ -9,8 +9,6 @@ import { Screen } from "./Screen.js";
 // import screenFragmentShader from "./Shaders/screen/fragment.glsl";
 
 import { lerp } from "../Helpers/math.js";
-import Time from "./Utils/Time.js";
-import Sizes from "./Utils/Sizes.js";
 
 const STAGES = {
     INTRO_SCROLLING: 1,
@@ -18,18 +16,6 @@ const STAGES = {
 };
 
 export default class World {
-    experience: Experience;
-    keyboard: Keyboard;
-    mouse: Mouse;
-    screen: Screen;
-    config: any;
-    scene: THREE.Scene;
-    resources: any;
-    time: Time;
-    sizes: Sizes;
-    camera: THREE.PerspectiveCamera;
-    scrollPercent: number;
-
     constructor(_options) {
         this.experience = new Experience();
         this.keyboard = new Keyboard();
@@ -96,7 +82,7 @@ export default class World {
         // this.handleScreenTextPlaying();
     }
 
-    handleScreenTextPlaying() {}
+    handleScreenTextPlaying() { }
 
     initializeParallax() {
         this.cursor.x = 0;
@@ -147,16 +133,14 @@ export default class World {
         this.scene.add(this.deskScene);
     }
 
-    resize() {}
+    resize() { }
 
     update() {
         this.screen.update();
-
         if (this.screenMaterial) this.screenMaterial.map = this.screen.texture;
 
         if (this.screenMaterial) this.screenMaterial.needsUpdate = true;
-        this.camera.position.x =
-            -(this.cursor.x - this.camera.position.x) * 0.1;
+        this.camera.position.x = -(this.cursor.x - this.camera.position.x) * 0.1;
 
         this.camera.position.y =
             1.105 + -(this.cursor.y - this.camera.position.y) * 0.01;
