@@ -33,7 +33,8 @@ export class Screen {
         this.target = new THREE.WebGLRenderTarget(width, height, {
             minFilter: THREE.LinearFilter,
             magFilter: THREE.LinearFilter,
-            format: THREE.RGBAFormat,
+            colorSpace: THREE.LinearSRGBColorSpace,
+            format: THREE.RGBFormat,
         });
 
         this.texture = this.target.texture;
@@ -41,7 +42,6 @@ export class Screen {
         preloadFont(
             {
                 font: "/assets/fonts/MR_ROBOT.ttf",
-                // characters: "abcdefghijklmnopqrstuvwxyz",
             },
             () => {
                 this.setScene();
@@ -104,7 +104,7 @@ export class Screen {
         // await this.animateText("More content coming soon...");
     }
 
-    animateText(textToAnimate) {
+    animateText(textToAnimate: string) {
         return new Promise((resolve, reject) => {
             let index = 1;
 
