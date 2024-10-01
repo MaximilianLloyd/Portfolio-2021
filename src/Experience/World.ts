@@ -64,15 +64,6 @@ export default class World {
                             // this.screen.startIntroText();
                             this.screen.startTextTimeline();
                             // this.camera.position.z = -4;
-                            const z = this.config.isMobile ? -4 : -2.2;
-
-                            anime({
-                                targets: this.camera.position,
-                                easing: "easeInOutQuint",
-                                z,
-                                duration: 2000,
-                            });
-                            // this.newCameraZ = -4;
                         },
                     });
                 }, 500);
