@@ -1,5 +1,7 @@
 import * as THREE from "three";
 import GUI from "lil-gui";
+import "@theatre/core";
+// import studio from "@theatre/studio";
 
 import Time from "./Utils/Time";
 import Sizes from "./Utils/Sizes";
@@ -9,15 +11,18 @@ import Resources from "./Resources";
 import Renderer from "./Renderer";
 import Camera from "./Camera";
 import World from "./World";
+import projectState from "../state.json";
 
 export type Config = {
     pixelRatio: number;
     width: number;
     height: number;
     debug: boolean;
+    isMobile: boolean;
 };
 
 import assets from "./assets.js";
+import { getProject, types } from "@theatre/core";
 
 export default class Experience {
     static instance;
@@ -32,6 +37,8 @@ export default class Experience {
     renderer: Renderer;
     world: World;
     resources: Resources;
+    theatre = getProject("THREE.js x Theatre.js", { state: projectState });
+    sheet = this.theatre.sheet("Main");
 
     constructor(_options: { targetElement?: HTMLElement }) {
         if (Experience.instance) {
@@ -64,6 +71,10 @@ export default class Experience {
         });
 
         this.update();
+
+        this.theatre.ready.then(() =>
+            this.sheet.sequence.play({ iterationCount: 1 }),
+        );
     }
 
     setConfig() {
@@ -77,6 +88,7 @@ export default class Experience {
             Math.max(window.devicePixelRatio, 1),
             2,
         );
+        this.config.isMobile = window.innerWidth < 768;
 
         // Width and height
         const boundings = this.targetElement.getBoundingClientRect();
@@ -87,6 +99,7 @@ export default class Experience {
     setDebug() {
         if (this.config.debug) {
             this.debug = new GUI();
+            studio.initialize();
         }
     }
 
