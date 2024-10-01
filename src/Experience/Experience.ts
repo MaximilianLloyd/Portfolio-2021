@@ -1,5 +1,7 @@
 import * as THREE from "three";
 import GUI from "lil-gui";
+import "@theatre/core";
+import studio from "@theatre/studio";
 
 import Time from "./Utils/Time";
 import Sizes from "./Utils/Sizes";
@@ -15,9 +17,11 @@ export type Config = {
     width: number;
     height: number;
     debug: boolean;
+    isMobile: boolean;
 };
 
 import assets from "./assets.js";
+import { getProject, types } from "@theatre/core";
 
 export default class Experience {
     static instance;
@@ -32,6 +36,8 @@ export default class Experience {
     renderer: Renderer;
     world: World;
     resources: Resources;
+    theatre = getProject("THREE.js x Theatre.js");
+    sheet = this.theatre.sheet("Main");
 
     constructor(_options: { targetElement?: HTMLElement }) {
         if (Experience.instance) {
@@ -64,6 +70,7 @@ export default class Experience {
         });
 
         this.update();
+        studio.initialize();
     }
 
     setConfig() {
@@ -77,6 +84,7 @@ export default class Experience {
             Math.max(window.devicePixelRatio, 1),
             2,
         );
+        this.config.isMobile = window.innerWidth < 768;
 
         // Width and height
         const boundings = this.targetElement.getBoundingClientRect();
@@ -102,6 +110,32 @@ export default class Experience {
 
     setCamera() {
         this.camera = new Camera();
+
+        const torusKnotObj = this.sheet.object("Torus Knot", {
+            // Note that the rotation is in radians
+            // (full rotation: 2 * Math.PI)
+            position: types.compound({
+                x: types.number(this.camera.instance?.position.x, {
+                    range: [-2, 2],
+                }),
+                y: types.number(this.camera.instance?.position.y, {
+                    range: [-2, 2],
+                }),
+                z: types.number(this.camera.instance?.position.z, {
+                    range: [-2, 2],
+                }),
+            }),
+        });
+
+        torusKnotObj.onValuesChange((values) => {
+            const { x, y, z } = values.position;
+
+            this.camera.instance.position.set(
+                x * Math.PI,
+                y * Math.PI,
+                z * Math.PI,
+            );
+        });
     }
 
     setRenderer() {

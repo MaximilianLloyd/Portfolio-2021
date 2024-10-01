@@ -1,6 +1,6 @@
 import * as THREE from "three";
 import anime from "animejs/lib/anime.es.js";
-import Experience from "./Experience.js";
+import Experience, { Config } from "./Experience.js";
 import { Keyboard } from "./Keyboard.js";
 import { Mouse } from "./Mouse.js";
 import { Screen } from "./Screen.js";
@@ -22,7 +22,7 @@ export default class World {
     keyboard: Keyboard;
     mouse: Mouse;
     screen: Screen;
-    config: any;
+    config: Config;
     scene: THREE.Scene;
     resources: any;
     time: Time;
@@ -64,10 +64,12 @@ export default class World {
                             // this.screen.startIntroText();
                             this.screen.startTextTimeline();
                             // this.camera.position.z = -4;
+                            const z = this.config.isMobile ? -4 : -2.2;
+
                             anime({
                                 targets: this.camera.position,
                                 easing: "easeInOutQuint",
-                                z: -2,
+                                z,
                                 duration: 2000,
                             });
                             // this.newCameraZ = -4;
