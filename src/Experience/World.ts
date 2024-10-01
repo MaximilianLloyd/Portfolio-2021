@@ -45,27 +45,32 @@ export default class World {
         this.cursor = { x: 0, y: 0 };
         this.newCameraZ = 0;
         this.CURRENT_STAGE = STAGES.INTRO_SCROLLING;
-
-        this.scrollContainer = document.querySelector("#scroll-container");
-        this.scrollElement = document.querySelector(".scroll");
+        this.camera.position.z = -0.6;
 
         this.resources.on("groupEnd", (_group) => {
             if (_group.name === "base") {
                 console.log("Loading ended");
                 this.initializeParallax();
-                this.initializeScroll();
                 this.initializeMaterials();
                 this.setScene();
 
                 setTimeout(() => {
                     anime({
                         targets: ".overlay",
-                        duration: 1500,
+                        duration: 500,
                         easing: "easeInOutQuint",
                         opacity: 0,
                         complete: () => {
                             // this.screen.startIntroText();
                             this.screen.startTextTimeline();
+                            // this.camera.position.z = -4;
+                            anime({
+                                targets: this.camera.position,
+                                easing: "easeInOutQuint",
+                                z: -2,
+                                duration: 2000,
+                            });
+                            // this.newCameraZ = -4;
                         },
                     });
                 }, 500);
@@ -73,26 +78,12 @@ export default class World {
         });
     }
 
-    initializeScroll() {
-        if (this.experience.camera) {
-            const cameraPosition = this.experience.camera.instance.position;
-            this.initialCameraZ = cameraPosition.z;
-            this.newCameraZ = this.initialCameraZ + -this.scrollPercent * 2;
-
-            this.handleScreenTextPlaying();
-            this.scrollContainer.addEventListener("scroll", () =>
-                this.handleScroll(),
-            );
-        }
-    }
-
     handleScroll() {
-        const height =
-            this.scrollElement.clientHeight - this.scrollContainer.clientHeight;
-
-        this.scrollPercent = this.scrollContainer.scrollTop / height;
-        this.newCameraZ = this.initialCameraZ + -this.scrollPercent * 1.5;
-
+        // const height =
+        //     this.scrollElement.clientHeight - this.scrollContainer.clientHeight;
+        //
+        // this.scrollPercent = this.scrollContainer.scrollTop / height;
+        // this.newCameraZ = this.initialCameraZ + -this.scrollPercent * 1.5;
         // this.handleScreenTextPlaying();
     }
 
@@ -124,6 +115,12 @@ export default class World {
             map: this.screen.texture,
         });
     }
+
+    keys: any[];
+    keyTimelines: Record<string, any>;
+    deskScene: THREE.Scene;
+    deskMaterial: THREE.MeshBasicMaterial;
+
     setScene() {
         this.keys = [];
         this.keyTimelines = {};
@@ -161,11 +158,11 @@ export default class World {
         this.camera.position.y =
             1.105 + -(this.cursor.y - this.camera.position.y) * 0.01;
 
-        this.camera.position.z = lerp(
-            this.camera.position.z,
-            this.newCameraZ,
-            0.05,
-        );
+        // this.camera.position.z = lerp(
+        //     this.camera.position.z,
+        //     this.newCameraZ,
+        //     0.05,
+        // );
 
         if (this.screenMaterial) {
             // this.screenMaterial.uniforms.uTime.value = this.time.elapsed / 1000;

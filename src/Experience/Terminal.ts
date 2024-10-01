@@ -14,8 +14,9 @@ type Commands =
 export class Terminal {
     prompt = "help";
     group = new THREE.Group();
-    cmdPromptText: any;
-    cmdPromptOutput: any;
+    cmdPromptText: Text;
+    cmdPromptOutput: Text;
+    cursorText: Text;
 
     constructor() {
         this.cmdPromptText = new Text();
@@ -43,8 +44,28 @@ export class Terminal {
         this.cmdPromptOutput.position.z = -2;
         this.cmdPromptOutput.sync();
 
+        this.cursorText = new Text();
+        this.cursorText.text = "┃";
+        this.cursorText.anchorX = "left";
+        this.cursorText.textAlign = "left";
+        this.cursorText.position.x = -2.7;
+        this.cursorText.fontSize = 0.17;
+        this.cursorText.position.y = -1.55;
+        this.cursorText.position.z = -2;
+        this.cursorText.color = "#00FF00";
+        this.cursorText.sync();
+
+        anime({
+            targets: this.cursorText.material,
+            opacity: 0,
+            duration: 1500,
+            loop: true,
+        });
+
         this.group.add(this.cmdPromptText);
         this.group.add(this.cmdPromptOutput);
+        this.group.add(this.cursorText);
+        this.setCursorText();
 
         window.addEventListener("keydown", this.handleKeyDown.bind(this));
         this.render();
@@ -52,6 +73,11 @@ export class Terminal {
     render() {
         this.cmdPromptText.text = "> " + this.prompt;
         this.cmdPromptText.sync();
+        this.setCursorText();
+    }
+    setCursorText() {
+        this.cursorText.position.x =
+            -3.2 + this.cmdPromptText.text.length * 0.115;
     }
     enter() {
         const cmd = this.prompt as Commands;
@@ -104,9 +130,12 @@ export class Terminal {
         this.cmdPromptText.sync();
     }
     handleKeyDown(event) {
+        this.setCursorText();
+        this.cursorText.sync();
+
         if (event.key === "Enter") {
             this.enter();
-        } else if (event.key === "Backspace") {
+        } else if (event.key === "Backspace" && this.prompt.length > 0) {
             this.prompt = this.prompt.slice(0, -1);
         } else if (
             event.key === "Alt" ||
@@ -116,7 +145,10 @@ export class Terminal {
             event.key === "CapsLock" ||
             event.key === "Tab" ||
             event.key === "ArrowUp" ||
-            event.key === "ArrowDown"
+            event.key === "ArrowDown" ||
+            event.key === "ArrowRight" ||
+            event.key === "ArrowLeft" ||
+            event.key === "Backspace"
         ) {
         } else {
             this.prompt = this.prompt + event.key;
