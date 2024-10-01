@@ -57,7 +57,7 @@ export default class World {
                 setTimeout(() => {
                     anime({
                         targets: ".overlay",
-                        duration: 1500,
+                        duration: 500,
                         easing: "easeInOutQuint",
                         opacity: 0,
                         complete: () => {
