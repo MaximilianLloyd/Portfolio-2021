@@ -1,7 +1,7 @@
 import * as THREE from "three";
 import GUI from "lil-gui";
 import "@theatre/core";
-import studio from "@theatre/studio";
+// import studio from "@theatre/studio";
 
 import Time from "./Utils/Time";
 import Sizes from "./Utils/Sizes";
@@ -11,6 +11,7 @@ import Resources from "./Resources";
 import Renderer from "./Renderer";
 import Camera from "./Camera";
 import World from "./World";
+import projectState from "../state.json";
 
 export type Config = {
     pixelRatio: number;
@@ -36,7 +37,7 @@ export default class Experience {
     renderer: Renderer;
     world: World;
     resources: Resources;
-    theatre = getProject("THREE.js x Theatre.js");
+    theatre = getProject("THREE.js x Theatre.js", { state: projectState });
     sheet = this.theatre.sheet("Main");
 
     constructor(_options: { targetElement?: HTMLElement }) {
@@ -70,7 +71,10 @@ export default class Experience {
         });
 
         this.update();
-        studio.initialize();
+
+        this.theatre.ready.then(() =>
+            this.sheet.sequence.play({ iterationCount: 1 }),
+        );
     }
 
     setConfig() {
@@ -95,6 +99,7 @@ export default class Experience {
     setDebug() {
         if (this.config.debug) {
             this.debug = new GUI();
+            studio.initialize();
         }
     }
 
@@ -110,32 +115,6 @@ export default class Experience {
 
     setCamera() {
         this.camera = new Camera();
-
-        const torusKnotObj = this.sheet.object("Torus Knot", {
-            // Note that the rotation is in radians
-            // (full rotation: 2 * Math.PI)
-            position: types.compound({
-                x: types.number(this.camera.instance?.position.x, {
-                    range: [-2, 2],
-                }),
-                y: types.number(this.camera.instance?.position.y, {
-                    range: [-2, 2],
-                }),
-                z: types.number(this.camera.instance?.position.z, {
-                    range: [-2, 2],
-                }),
-            }),
-        });
-
-        torusKnotObj.onValuesChange((values) => {
-            const { x, y, z } = values.position;
-
-            this.camera.instance.position.set(
-                x * Math.PI,
-                y * Math.PI,
-                z * Math.PI,
-            );
-        });
     }
 
     setRenderer() {

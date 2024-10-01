@@ -1,6 +1,7 @@
 import * as THREE from "three";
 import Experience from "./Experience";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
+import { getProject, types } from "@theatre/core";
 
 export default class Camera {
     constructor(_options) {
@@ -10,6 +11,7 @@ export default class Camera {
         this.debug = this.experience.debug;
         this.sizes = this.experience.sizes;
         this.scene = this.experience.scene;
+        this.sheet = this.experience.sheet;
         this.debugObject = {
             position: {
                 x: 0,
@@ -37,6 +39,45 @@ export default class Camera {
         this.instance.rotation.reorder("YXZ");
         this.instance.rotation.y = (180 * Math.PI) / 180;
 
+        const cameraObj = this.sheet.object("Camera", {
+            // Note that the rotation is in radians
+            // (full rotation: 2 * Math.PI)
+            position: types.compound({
+                x: types.number(this.instance.position.x, {
+                    range: [-2, 2],
+                }),
+                y: types.number(this.instance.position.y, {
+                    range: [-2, 2],
+                }),
+                z: types.number(this.instance.position.z, {
+                    range: [-2, 2],
+                }),
+            }),
+            rotation: types.compound({
+                x: types.number(this.instance.rotation.x, {
+                    range: [-2, 2],
+                }),
+                y: types.number(this.instance.rotation.y, {
+                    range: [-2, 2],
+                }),
+                z: types.number(this.instance.rotation.z, {
+                    range: [-2, 2],
+                }),
+            }),
+        });
+
+        cameraObj.onValuesChange((values) => {
+            const { x, y, z } = values.position;
+            const { rotation } = values;
+
+            this.instance.position.set(x * Math.PI, y * Math.PI, z * Math.PI);
+
+            this.instance.rotation.set(
+                rotation.x * Math.PI,
+                rotation.y * Math.PI,
+                rotation.z * Math.PI,
+            );
+        });
         this.scene.add(this.instance);
     }
 
