@@ -68,6 +68,7 @@ export default class World {
                                 targets: this.camera.position,
                                 easing: "easeInOutQuint",
                                 z: -2,
+                                duration: 2000,
                             });
                             // this.newCameraZ = -4;
                         },
