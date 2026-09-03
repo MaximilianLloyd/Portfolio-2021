@@ -95,7 +95,7 @@ export default class World {
     // todo: create helper function for applying sRGBEncoding to textures
     initializeMaterials() {
         const deskTexture = this.resources.items.deskTexture;
-        deskTexture.encoding = THREE.sRGBEncoding;
+        deskTexture.colorSpace = THREE.SRGBColorSpace;
         deskTexture.flipY = false;
 
         this.deskScene = this.resources.items.desk.scene;

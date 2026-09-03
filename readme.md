@@ -1,18 +1,21 @@
-# Three.js - Template - Complex
+# Portfolio 2021
 
-🚧 This template is under construction
+Three.js portfolio built with Vite.
 
 ## Setup
-Download [Node.js](https://nodejs.org/en/download/).
-Run this followed commands:
+
+Requires [Node.js](https://nodejs.org/) 24+ and [pnpm](https://pnpm.io/) (a version is pinned in `package.json`, so `corepack enable` is enough).
 
 ``` bash
 # Install dependencies (only the first time)
-npm install
+pnpm install
 
-# Run the local server at localhost:8080
-npm run dev
+# Run the local dev server
+pnpm dev
 
 # Build for production in the dist/ directory
-npm run build
+pnpm build
+
+# Preview the production build
+pnpm preview
 ```
